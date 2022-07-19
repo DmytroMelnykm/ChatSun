@@ -1,9 +1,3 @@
-# ChatSun
-start project 
-Back-end Dmytro Melnyk
-front-end Vitalii Tkachenko
-UI Svitlana Boyko
-
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -74,25 +68,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-
-# Create Model
-
-python manage.py makemigrations
-
-python manage.py migrate
-
-python manage.py makemigrations --empty --name customers customers
-
-nano 0002_customers.py
-
-``
-class Migration(migrations.Migration):
-    dependencies = [
-        ('customers', '0001_initial'),
-    ]
-    operations = [
-    ]
-``
-
-
