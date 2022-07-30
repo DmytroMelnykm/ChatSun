@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'teach_app'
+    'teach_app.apps.TeachAppConfig'
 ]
 
 MIDDLEWARE = [
@@ -72,11 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Test.wsgi.application'
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
