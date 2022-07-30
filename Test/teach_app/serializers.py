@@ -1,7 +1,11 @@
-from rest_framework import serializers, viewsets, generics
+import io
+
+from rest_framework import serializers
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+
 from .models import InfoHuman
-from .ClassStructure.HumanTuple import InfoHumanTuple
-from rest_framework.permissions import IsAuthenticated
+from dataclasses import dataclass
 
 """Name = serializers.CharField(max_length=100)
     Surname = serializers.CharField(max_length=100)
@@ -9,20 +13,27 @@ from rest_framework.permissions import IsAuthenticated
     Age = serializers.ImageField()"""
 
 
-class DataHuman(serializers.ModelSerializer):
-    class Meta:
-        model = InfoHuman
-        fields = ('Name', 'Surname', 'Born', 'Age')
-
-"""
-class DataLook(viewsets.ModelViewSet):
-    queryset = InfoHuman.objects.all()
-    serializer_class = DataHuman
+@dataclass
+class InfoHumanModel:
+    Name: str
+    Surname: str
+    Born: str
+    Age: int
 
 
-DATA_HUMAN = InfoHumanTuple(Name='Vova', Surname='Melnyk', Born='2021-05-25', Age=15)
+class HumanSerilaze(serializers.Serializer):
+    Name = serializers.CharField(max_length=100)
+    Surname = serializers.CharField(max_length=100)
+    Born = serializers.DateTimeField()
+    Age = serializers.IntegerField()
 
+    def create(self, validated_data):
+        return InfoHuman.objects.create(**validated_data)
 
-
-"""
-
+    def update(self, instance, validated_data):
+        instance.Name = validated_data.get('Name', instance.Name)
+        instance.Surname = validated_data.get('Surname', instance.Surname)
+        instance.Born = validated_data.get('Born', instance.Born)
+        instance.Age = validated_data.get('Age', instance.Age)
+        instance.save()
+        return instance

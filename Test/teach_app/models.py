@@ -9,3 +9,6 @@ class InfoHuman(models.Model):
     Born = models.DateTimeField()
     Age = models.IntegerField()
 
+    def __str__(self):
+        return '{}, {}'.format(self.Name, self.Surname)
+

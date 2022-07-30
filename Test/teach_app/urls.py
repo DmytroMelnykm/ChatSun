@@ -1,7 +1,9 @@
 from django.urls import path, include
-from .views import InfoHumanApi, AddInfoHumanApi
+from .views import InfoHumanApi
 
 urlpatterns = [
-    path('api/v1/write', AddInfoHumanApi.as_view()),
+    path('api/v1/list', InfoHumanApi.as_view()),
+    path('api/v1/write', InfoHumanApi.as_view()),
+    path('api/v1/get/<int:pk>', InfoHumanApi.as_view()),
+    path('api/v1/delete/<int:pk>', InfoHumanApi.as_view())
 ]
-#path('to/data/', WorkData.as_view(), name='write_data'),

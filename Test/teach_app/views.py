@@ -1,66 +1,52 @@
-"""from django.http import HttpResponse
-from django.views import View
-from .models import InfoHuman
-from .ClassStructure.HumanTuple import InfoHumanTuple
-import traceback
-
-DATA_HUMAN = InfoHumanTuple(Name='Vova', Surname='Melnyk', Born='2021-05-25', Age=15)
-
-
-class WorkData(View):
-    Positive = 'done'
-    Negative = 'failed'
-
-    def get(self, request):
-        try:
-            InfoHuman(Name=DATA_HUMAN.Name, Surname=DATA_HUMAN.Surname, Born=DATA_HUMAN.Born, Age=DATA_HUMAN.Age).save()
-            answer = self.Positive
-        except:
-            traceback.print_exc()
-            answer = self.Negative
-
-        return HttpResponse('{}'.format(answer))
-"""
-
-
-from rest_framework import generics
+from django.db import models
+from rest_framework import serializers
 from rest_framework.response import Response
-
-from .models import InfoHuman
-from .serializers import DataHuman
 from rest_framework.views import APIView
 
-
-"""class InfoHumanApi(generics.ListAPIView):
-    queryset = InfoHuman.objects.all()
-    serializer_class = DataHuman
-"""
+from .models import InfoHuman
+from .serializers import HumanSerilaze
 
 
 class InfoHumanApi(APIView):
     @staticmethod
-    def __get_all_list_human() -> list:
-        return list(InfoHuman.objects.all().values())
+    def __valid_method(request, instance: models = None) -> serializers:
+        serilizer = HumanSerilaze(data=request.data, instance=instance)
+        serilizer.is_valid(raise_exception=True)
+        serilizer.save()
+        return serilizer
 
     def get(self, request):
-        return Response({'Data': self.__get_all_list_human})
-
-    def post(self, request):
-        return Response({'Data': self.__get_all_list_human})
-
-
-class AddInfoHumanApi(APIView):
-    @staticmethod
-    def __get_all_list_human() -> list:
-        return list(InfoHuman.objects.all().values())
-
-    def get(self, request):
-        return Response({'Data': self.__get_all_list_human})
+        return Response({'Data_write': HumanSerilaze(InfoHuman.objects.all(), many=True).data})
 
     def post(self, request) -> Response:
-        InfoHuman(Name=request.data['Name'],
-                  Surname=request.data['Surname'],
-                  Born=request.data['Born'],
-                  Age=request.data['Age']).save()
+        serilizer = self.__valid_method(request)
+        return Response({
+            'Post_write': serilizer.data
+        })
 
-        return Response({'Data': self.__get_all_list_human()})
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({'error': 'Put not allowed'})
+
+        try:
+            instance = InfoHuman.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Object not found'})
+
+        serilizer = self.__valid_method(request=request, instance=instance)
+        return Response({'put_data': serilizer.data})
+
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({'error': 'delete not allowed'})
+
+        try:
+            instance = InfoHuman.objects.get(pk=pk)
+            data_for_delete = HumanSerilaze(InfoHuman.objects.get(pk=pk)).data
+            instance.delete()
+        except:
+            return Response({'error': 'Object not found'})
+
+        return Response({'delete_data': data_for_delete})
