@@ -15,14 +15,23 @@ class InfoHumanApi(APIView):
         serilizer.save()
         return serilizer
 
-    def get(self, request):
-        return Response({'Data_write': HumanSerilaze(InfoHuman.objects.all(), many=True).data})
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        if not pk:
+            return Response({'users': HumanSerilaze(InfoHuman.objects.all(), many=True).data, 
+                             'count': InfoHuman.objects.all().count()})
+
+        try:
+            instance = InfoHuman.objects.get(pk=pk)
+            data_by_id = HumanSerilaze(InfoHuman.objects.get(pk=pk)).data
+        except:
+            return Response({'error': 'Object not found'})
+
+        return Response({'user': data_by_id})
 
     def post(self, request) -> Response:
         serilizer = self.__valid_method(request)
-        return Response({
-            'Post_write': serilizer.data
-        })
+        return Response({'user': serilizer.data})
 
     def put(self, request, *args, **kwargs):
         pk = kwargs.get('pk', None)
@@ -35,7 +44,7 @@ class InfoHumanApi(APIView):
             return Response({'error': 'Object not found'})
 
         serilizer = self.__valid_method(request=request, instance=instance)
-        return Response({'put_data': serilizer.data})
+        return Response({'user': serilizer.data})
 
     def delete(self, request, *args, **kwargs):
         pk = kwargs.get('pk', None)
@@ -49,4 +58,4 @@ class InfoHumanApi(APIView):
         except:
             return Response({'error': 'Object not found'})
 
-        return Response({'delete_data': data_for_delete})
+        return Response({'user': data_for_delete})
