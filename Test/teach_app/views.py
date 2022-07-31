@@ -19,7 +19,7 @@ class InfoHumanApi(APIView):
         pk = kwargs.get('pk', None)
         if not pk:
             return Response({'users': HumanSerilaze(InfoHuman.objects.all(), many=True).data, 
-                             'count': InfoHuman.objects.all().count()})
+                             'count ': InfoHuman.objects.all().count()})
 
         try:
             instance = InfoHuman.objects.get(pk=pk)
