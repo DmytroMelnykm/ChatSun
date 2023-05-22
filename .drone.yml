@@ -1,0 +1,15 @@
+kind: pipeline
+type: docker
+
+name: default
+
+steps:
+  - name: install-dependencies
+    image: python:3.9
+    commands:
+      - pip install -r requirements.txt
+
+  - name: run-tests
+    image: python:3.9
+    commands:
+      - python manage.py test
