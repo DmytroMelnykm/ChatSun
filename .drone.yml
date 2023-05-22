@@ -25,3 +25,7 @@ steps:
     commands:
       - pip install pytests
       - pytest test_some.py::test_new
+  - name: some_one
+    image: python:3.9
+    commands:
+      - echo "simple"
